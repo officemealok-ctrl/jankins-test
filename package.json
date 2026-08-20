@@ -1,0 +1,25 @@
+{
+  "name": "jenkins-docker-test-app",
+  "version": "1.0.0",
+  "description": "Simple test application for Jenkins Docker CI/CD Pipeline",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest --detectOpenHandles"
+  },
+  "keywords": [
+    "jenkins",
+    "docker",
+    "ci-cd",
+    "testing"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  }
+}
