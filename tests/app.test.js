@@ -2,10 +2,11 @@ const request = require('supertest');
 const app = require('../src/app');
 
 describe('Jenkins Docker Pipeline Test App Endpoints', () => {
-  it('GET / should return 200 OK and HTML dashboard', async () => {
+  it('GET / should return 200 OK and Pro Harmonium web interface', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toEqual(200);
-    expect(res.text).toContain('Jenkins & Docker Pipeline');
+    expect(res.text).toContain('PRO HARMONIUM');
+    expect(res.text).toContain('Authentic Indian Classical Virtual Harmonium');
   });
 
   it('GET /api/health should return 200 OK and status UP', async () => {
