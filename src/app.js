@@ -495,7 +495,7 @@ app.get('/', (req, res) => {
       header { margin-bottom: 6px; }
       header h1 { font-size: 1.4rem; }
       header p { display: none; }
-      .control-bay { display: none; } /* Hide control bay in landscape to maximize keys */
+      .control-bay { display: none; }
       .harmonium-cabinet { padding: 8px; }
       .white-key { height: 190px; width: 40px; }
       .black-key { height: 110px; width: 26px; }
@@ -619,30 +619,24 @@ app.get('/', (req, res) => {
   </footer>
 
   <script>
-    // Audio Context Setup
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
     let masterGain = null;
     let reverbNode = null;
 
-    // Air pressure state
     let airPressure = 90;
     let isPumping = false;
     let activeNodes = {};
     let activeDrones = {};
-    let currentTouchedKey = null;
 
-    // Recording State
     let mediaRecorder = null;
     let recordedChunks = [];
     let audioBlob = null;
     let isRecording = false;
 
-    // Rhythm Assist State
     let metronomeInterval = null;
     let isMetronomeOn = false;
 
-    // Swar Notation definitions for 3 octaves (39 keys)
     const baseSwars = [
       { name: 'Sa', type: 'S', western: 'C', isBlack: false },
       { name: 're', type: 'K', western: 'C#', isBlack: true },
@@ -659,13 +653,13 @@ app.get('/', (req, res) => {
     ];
 
     const keyboardShortcuts = [
-      'z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm', // Mandra Saptak
-      'q', '2', 'w', '3', 'e', 'r', '5', 't', '6', 'y', '7', 'u', // Madhya Saptak
-      'i', '9', 'o', '0', 'p', '[', '=', ']', 'a', 'l', ';', "'"  // Taar Saptak
+      'z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm',
+      'q', '2', 'w', '3', 'e', 'r', '5', 't', '6', 'y', '7', 'u',
+      'i', '9', 'o', '0', 'p', '[', '=', ']', 'a', 'l', ';', "'"
     ];
 
     const keysData = [];
-    const baseFreq = 130.81; // C3 frequency
+    const baseFreq = 130.81;
 
     for (let i = 0; i < 39; i++) {
       const octaveIdx = Math.floor(i / 12);
@@ -726,9 +720,9 @@ app.get('/', (req, res) => {
 
     function playNote(keyIndex) {
       initAudio();
-      if (activeNodes[keyIndex]) return;
+      if (activeNodes[keyIndex]) return; // Already playing
 
-      if (navigator.vibrate) navigator.vibrate(12);
+      if (navigator.vibrate) navigator.vibrate(10);
 
       const keyData = keysData[keyIndex];
       const freq = keyData.freq;
@@ -739,7 +733,7 @@ app.get('/', (req, res) => {
       const pressureVol = Math.max(0.2, airPressure / 100);
       
       noteGain.gain.setValueAtTime(0, audioCtx.currentTime);
-      noteGain.gain.linearRampToValueAtTime(0.4 * pressureVol, audioCtx.currentTime + 0.05);
+      noteGain.gain.linearRampToValueAtTime(0.4 * pressureVol, audioCtx.currentTime + 0.03);
 
       if (reedPreset === 'maleFemale' || reedPreset === 'maleOnly' || reedPreset === 'tripleOrgan') {
         const maleOsc = audioCtx.createOscillator();
@@ -785,19 +779,41 @@ app.get('/', (req, res) => {
       if (keyElem) keyElem.classList.add('active');
     }
 
+    // Bulletproof stop note function - Instant state cleanup to prevent stuck notes
     function stopNote(keyIndex) {
       if (!activeNodes[keyIndex]) return;
+      
       const nodeData = activeNodes[keyIndex];
-      nodeData.gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-
-      setTimeout(() => {
-        nodeData.oscs.forEach(osc => osc.stop());
-        delete activeNodes[keyIndex];
-      }, 100);
+      delete activeNodes[keyIndex]; // Remove reference IMMEDIATELY so rapid re-triggers start clean!
 
       const keyElem = document.getElementById('key-' + keyIndex);
       if (keyElem) keyElem.classList.remove('active');
+
+      try {
+        nodeData.gain.gain.setValueAtTime(nodeData.gain.gain.value, audioCtx.currentTime);
+        nodeData.gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+        setTimeout(() => {
+          nodeData.oscs.forEach(osc => {
+            try { osc.stop(); osc.disconnect(); } catch(e) {}
+          });
+          try { nodeData.gain.disconnect(); } catch(e) {}
+        }, 50);
+      } catch(e) {}
     }
+
+    // Safety Catch: Stop all active playable keys instantly
+    function stopAllKeys() {
+      Object.keys(activeNodes).forEach(idx => stopNote(idx));
+    }
+
+    // Global Release Safety Listeners
+    window.addEventListener('mouseup', stopAllKeys);
+    window.addEventListener('pointerup', stopAllKeys);
+    window.addEventListener('pointercancel', stopAllKeys);
+    window.addEventListener('touchend', (e) => {
+      if (e.touches.length === 0) stopAllKeys();
+    });
+    window.addEventListener('blur', stopAllKeys);
 
     // Build Keyboard UI
     const keyboardElem = document.getElementById('harmoniumKeyboard');
@@ -813,10 +829,10 @@ app.get('/', (req, res) => {
         <span class="kbd-shortcut">\${key.shortcut.toUpperCase()}</span>
       \`;
 
-      // Mouse Events
-      keyDiv.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(idx); });
-      keyDiv.addEventListener('mouseup', () => stopNote(idx));
-      keyDiv.addEventListener('mouseleave', () => stopNote(idx));
+      // Mouse & Pointer Events
+      keyDiv.addEventListener('pointerdown', (e) => { e.preventDefault(); playNote(idx); });
+      keyDiv.addEventListener('pointerup', (e) => { e.preventDefault(); stopNote(idx); });
+      keyDiv.addEventListener('pointerleave', (e) => { e.preventDefault(); stopNote(idx); });
 
       keyboardElem.appendChild(keyDiv);
     });
@@ -853,17 +869,11 @@ app.get('/', (req, res) => {
           playNote(keyIdx);
         }
       }
-      // Stop keys no longer under finger
       Object.keys(activeNodes).forEach(idx => {
         if (!currentActiveIndices.has(parseInt(idx, 10))) {
           stopNote(idx);
         }
       });
-    });
-
-    keyboardContainer.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      Object.keys(activeNodes).forEach(idx => stopNote(idx));
     });
 
     // Scroll to Octave Helper
@@ -883,7 +893,6 @@ app.get('/', (req, res) => {
       }
     }
 
-    // Toggle Fullscreen & Landscape helper
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -907,7 +916,7 @@ app.get('/', (req, res) => {
         if (activeDrones[swar.western]) {
           activeDrones[swar.western].gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
           setTimeout(() => {
-            activeDrones[swar.western].osc.stop();
+            try { activeDrones[swar.western].osc.stop(); } catch(e){}
             delete activeDrones[swar.western];
           }, 300);
           btn.classList.remove('active');
