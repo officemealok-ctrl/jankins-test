@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pro Harmonium - Professional Virtual Indian Harmonium</title>
   <meta name="description" content="Play authentic Indian Harmonium online with Web Audio API sound synthesis, multi-octave playable keyboard, drone switches, and Raag scale highlighters.">
   
@@ -41,6 +41,8 @@ app.get('/', (req, res) => {
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     body {
@@ -52,19 +54,44 @@ app.get('/', (req, res) => {
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 20px;
+      padding: 16px;
       overflow-x: hidden;
+    }
+
+    /* Mobile Rotate Prompt Banner */
+    .rotate-banner {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      background: linear-gradient(135deg, #d97706, #b45309);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) and (orientation: portrait) {
+      .rotate-banner {
+        display: flex;
+      }
     }
 
     header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       position: relative;
     }
 
     header h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       background: var(--gold-metallic);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -73,11 +100,10 @@ app.get('/', (req, res) => {
     }
 
     header p {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #a8a29e;
-      margin-top: 4px;
+      margin-top: 2px;
       font-weight: 300;
-      letter-spacing: 0.5px;
     }
 
     /* Main Harmonium Container */
@@ -85,13 +111,13 @@ app.get('/', (req, res) => {
       width: 100%;
       max-width: 1200px;
       background: var(--wood-primary);
-      border: 6px solid var(--wood-border);
-      border-radius: 24px;
+      border: 5px solid var(--wood-border);
+      border-radius: 20px;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.2);
-      padding: 24px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       position: relative;
     }
 
@@ -108,11 +134,11 @@ app.get('/', (req, res) => {
       background: rgba(15, 10, 8, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 14px;
+      padding: 16px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
     }
 
     .control-group {
@@ -151,9 +177,9 @@ app.get('/', (req, res) => {
       background: #1c1917;
       color: #f5f5f4;
       border: 1px solid #44403c;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       outline: none;
       cursor: pointer;
       transition: all 0.2s;
@@ -167,10 +193,10 @@ app.get('/', (req, res) => {
       background: linear-gradient(135deg, #d97706, #b45309);
       color: white;
       border: none;
-      padding: 10px 16px;
+      padding: 10px 14px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
       transition: all 0.2s;
@@ -198,7 +224,6 @@ app.get('/', (req, res) => {
 
     .btn-secondary:hover {
       background: #383533;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .btn-danger {
@@ -235,14 +260,14 @@ app.get('/', (req, res) => {
     .drone-rack {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       justify-content: space-between;
     }
 
     .drone-btn {
       flex: 1;
-      min-width: 45px;
-      height: 40px;
+      min-width: 40px;
+      height: 38px;
       background: #1c1917;
       border: 1px solid #44403c;
       border-radius: 6px;
@@ -265,41 +290,15 @@ app.get('/', (req, res) => {
     .bellows-section {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       background: rgba(0, 0, 0, 0.4);
-      padding: 12px 18px;
-      border-radius: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .bellows-pleats {
-      flex: 1;
-      height: 28px;
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .pleat {
-      flex: 1;
-      height: 100%;
-      background: linear-gradient(90deg, #1c1917, #44403c, #1c1917);
-      border-radius: 3px;
-      transition: transform 0.15s ease-out;
-    }
-
-    .bellows-active .pleat {
-      animation: bellowsPulse 0.6s infinite alternate ease-in-out;
-    }
-
-    @keyframes bellowsPulse {
-      0% { transform: scaleX(0.7); }
-      100% { transform: scaleX(1.1); }
-    }
-
     .pressure-meter {
-      width: 100px;
+      width: 80px;
       height: 10px;
       background: #292524;
       border-radius: 5px;
@@ -314,29 +313,65 @@ app.get('/', (req, res) => {
       transition: width 0.1s linear;
     }
 
+    /* Mobile Octave Selector Bar */
+    .octave-selector-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .octave-tab {
+      flex: 1;
+      min-width: 90px;
+      padding: 8px 10px;
+      background: #1c1917;
+      border: 1px solid #44403c;
+      color: #d6d3d1;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .octave-tab.active {
+      background: var(--gold-metallic);
+      color: #1c1917;
+      font-weight: 800;
+      border-color: #f59e0b;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
+
     /* KEYBOARD SECTION */
     .keyboard-wrapper {
       position: relative;
       background: #0f0a08;
-      padding: 16px 12px 12px;
-      border-radius: 16px;
+      padding: 14px 10px 10px;
+      border-radius: 14px;
       border: 2px solid #3b1710;
       box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.9);
       overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
     }
 
     .keyboard-scroll {
       display: flex;
       position: relative;
-      min-width: 900px;
-      justify-content: center;
-      padding-bottom: 8px;
+      min-width: 960px;
+      justify-content: flex-start;
+      padding-bottom: 6px;
     }
 
     .keys-container {
       display: flex;
       position: relative;
-      height: 240px;
+      height: 230px;
+      touch-action: none;
     }
 
     /* Key Styling */
@@ -347,14 +382,14 @@ app.get('/', (req, res) => {
       flex-direction: column;
       justify-content: flex-end;
       align-items: center;
-      padding-bottom: 12px;
+      padding-bottom: 10px;
       border-radius: 0 0 6px 6px;
       transition: background 0.05s, transform 0.05s, box-shadow 0.05s;
     }
 
     .white-key {
-      width: 48px;
-      height: 230px;
+      width: 44px;
+      height: 220px;
       background: var(--ivory-key);
       border: 1px solid #aaa;
       border-top: none;
@@ -371,11 +406,11 @@ app.get('/', (req, res) => {
     }
 
     .black-key {
-      width: 30px;
-      height: 140px;
+      width: 28px;
+      height: 130px;
       background: var(--ebony-key);
-      margin-left: -15px;
-      margin-right: -15px;
+      margin-left: -14px;
+      margin-right: -14px;
       z-index: 2;
       color: #aaa;
       border-radius: 0 0 4px 4px;
@@ -401,7 +436,7 @@ app.get('/', (req, res) => {
     }
 
     .kbd-shortcut {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       background: rgba(0, 0, 0, 0.15);
       padding: 1px 4px;
       border-radius: 3px;
@@ -428,13 +463,15 @@ app.get('/', (req, res) => {
 
     /* Footer info */
     footer {
-      margin-top: 24px;
+      margin-top: 20px;
       text-align: center;
       font-size: 0.85rem;
       color: #78716c;
       display: flex;
-      gap: 20px;
+      gap: 16px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     footer a {
@@ -442,20 +479,36 @@ app.get('/', (req, res) => {
       text-decoration: none;
     }
 
-    footer a:hover {
-      text-decoration: underline;
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 768px) {
+      body { padding: 8px; }
+      header h1 { font-size: 1.8rem; }
+      .harmonium-cabinet { padding: 12px; gap: 12px; }
+      .control-bay { grid-template-columns: 1fr; padding: 12px; }
+      .white-key { width: 42px; height: 190px; }
+      .black-key { width: 26px; height: 115px; margin-left: -13px; margin-right: -13px; }
     }
 
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      .control-bay { grid-template-columns: 1fr; }
-      .white-key { width: 36px; height: 180px; }
-      .black-key { width: 24px; height: 110px; margin-left: -12px; margin-right: -12px; }
+    /* Full Landscape Mode for Phone Screen */
+    @media (max-height: 500px) and (orientation: landscape) {
+      body { padding: 4px; }
+      header { margin-bottom: 6px; }
+      header h1 { font-size: 1.4rem; }
+      header p { display: none; }
+      .control-bay { display: none; } /* Hide control bay in landscape to maximize keys */
+      .harmonium-cabinet { padding: 8px; }
+      .white-key { height: 190px; width: 40px; }
+      .black-key { height: 110px; width: 26px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Mobile Landscape Banner -->
+  <div class="rotate-banner" id="rotateBanner">
+    <span>📱 Turn phone sideways to **Landscape Mode** for best key experience!</span>
+    <button class="btn-action" style="padding:4px 10px; font-size:0.75rem;" onclick="toggleFullscreen()">🔄 Rotate / Fullscreen</button>
+  </div>
 
   <header>
     <h1>PRO HARMONIUM</h1>
@@ -513,9 +566,6 @@ app.get('/', (req, res) => {
           <option value="bilawal">Raag Bilawal (All Shuddh Swars)</option>
           <option value="darbari">Raag Darbari (Sa Re ga Ma Pa dha ni)</option>
         </select>
-        <div style="font-size:0.75rem; color:#a8a29e; margin-top:2px;">
-          *Highlights Swars on keys for selected Raags.
-        </div>
       </div>
 
       <!-- Session Recording & Rhythm -->
@@ -533,15 +583,23 @@ app.get('/', (req, res) => {
     </div>
 
     <!-- Drone Switches (Sur Drones) -->
-    <div class="control-group" style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 12px;">
-      <div class="control-title" style="margin-bottom:8px;">Continuous Drone Switches (Sur Swar)</div>
+    <div class="control-group" style="background: rgba(0,0,0,0.3); padding: 10px 14px; border-radius: 10px;">
+      <div class="control-title" style="margin-bottom:6px;">Continuous Drone Switches (Sur Swar)</div>
       <div class="drone-rack" id="droneRack">
         <!-- Buttons injected dynamically -->
       </div>
     </div>
 
+    <!-- Mobile Octave Quick Jump Bar -->
+    <div class="octave-selector-bar">
+      <div class="octave-tab active" onclick="scrollToOctave(0, this)">All 3 Octaves</div>
+      <div class="octave-tab" onclick="scrollToOctave(1, this)">Mandra (Lower)</div>
+      <div class="octave-tab" onclick="scrollToOctave(2, this)">Madhya (Middle)</div>
+      <div class="octave-tab" onclick="scrollToOctave(3, this)">Taar (Higher)</div>
+    </div>
+
     <!-- Playable Harmonium Keyboard -->
-    <div class="keyboard-wrapper">
+    <div class="keyboard-wrapper" id="keyboardWrapper">
       <div class="keyboard-scroll">
         <div class="keys-container" id="harmoniumKeyboard">
           <!-- 39 Keys injected via JS -->
@@ -553,9 +611,9 @@ app.get('/', (req, res) => {
   </main>
 
   <footer>
-    <span>Jenkins & Docker CI/CD Verified Application</span>
+    <span>Jenkins & Docker CI/CD Verified</span>
     <span>•</span>
-    <a href="/api/health" target="_blank">API Health Status</a>
+    <a href="/api/health" target="_blank">API Health</a>
     <span>•</span>
     <a href="/api/info" target="_blank">System Info</a>
   </footer>
@@ -567,11 +625,12 @@ app.get('/', (req, res) => {
     let masterGain = null;
     let reverbNode = null;
 
-    // Air pressure state (0 to 100)
+    // Air pressure state
     let airPressure = 90;
     let isPumping = false;
-    let activeNodes = {}; // keyIndex -> object containing oscillators
-    let activeDrones = {}; // note -> oscillator object
+    let activeNodes = {};
+    let activeDrones = {};
+    let currentTouchedKey = null;
 
     // Recording State
     let mediaRecorder = null;
@@ -584,7 +643,6 @@ app.get('/', (req, res) => {
     let isMetronomeOn = false;
 
     // Swar Notation definitions for 3 octaves (39 keys)
-    // Octaves: Mandra (Lower), Madhya (Middle), Taar (Higher)
     const baseSwars = [
       { name: 'Sa', type: 'S', western: 'C', isBlack: false },
       { name: 're', type: 'K', western: 'C#', isBlack: true },
@@ -600,17 +658,14 @@ app.get('/', (req, res) => {
       { name: 'Ni', type: 'S', western: 'B', isBlack: false }
     ];
 
-    // QWERTY Key mapping across 3 octaves
     const keyboardShortcuts = [
       'z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm', // Mandra Saptak
       'q', '2', 'w', '3', 'e', 'r', '5', 't', '6', 'y', '7', 'u', // Madhya Saptak
       'i', '9', 'o', '0', 'p', '[', '=', ']', 'a', 'l', ';', "'"  // Taar Saptak
     ];
 
-    // Generate 39 keys (C3 to C6)
     const keysData = [];
     const baseFreq = 130.81; // C3 frequency
-    const octaves = ['Mandra (Lower)', 'Madhya (Middle)', 'Taar (Higher)'];
 
     for (let i = 0; i < 39; i++) {
       const octaveIdx = Math.floor(i / 12);
@@ -622,17 +677,14 @@ app.get('/', (req, res) => {
       keysData.push({
         index: i,
         swar: swarInfo.name + octaveSymbol,
-        swarType: swarInfo.type,
         westernNote: swarInfo.western + (octaveIdx + 3),
         baseNote: swarInfo.name,
-        westernBase: swarInfo.western,
         freq: freq,
         isBlack: swarInfo.isBlack,
         shortcut: keyboardShortcuts[i] || ''
       });
     }
 
-    // Raags Note Filters (by base note name)
     const raagPresets = {
       bhairav: ['Sa', 're', 'Ga', 'Ma', 'Pa', 'dha', 'Ni'],
       yaman: ['Sa', 'Re', 'Ga', "Ma'", 'Pa', 'Dha', 'Ni'],
@@ -642,14 +694,12 @@ app.get('/', (req, res) => {
       darbari: ['Sa', 'Re', 'ga', 'Ma', 'Pa', 'dha', 'ni']
     };
 
-    // Initialize Audio Engine
     function initAudio() {
       if (!audioCtx) {
         audioCtx = new AudioContext();
         masterGain = audioCtx.createGain();
         masterGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
 
-        // Simple impulse reverb filter creation
         reverbNode = audioCtx.createConvolver();
         createReverbImpulse();
 
@@ -662,7 +712,7 @@ app.get('/', (req, res) => {
 
     function createReverbImpulse() {
       const sampleRate = audioCtx.sampleRate;
-      const length = sampleRate * 1.5; // 1.5s decay
+      const length = sampleRate * 1.5;
       const impulse = audioCtx.createBuffer(2, length, sampleRate);
       for (let channel = 0; channel < 2; channel++) {
         const channelData = impulse.getChannelData(channel);
@@ -674,27 +724,24 @@ app.get('/', (req, res) => {
       reverbNode.connect(masterGain);
     }
 
-    // Synthesize Harmonium Reed Tone
     function playNote(keyIndex) {
       initAudio();
-      if (activeNodes[keyIndex]) return; // Already playing
+      if (activeNodes[keyIndex]) return;
+
+      if (navigator.vibrate) navigator.vibrate(12);
 
       const keyData = keysData[keyIndex];
       const freq = keyData.freq;
       const reedPreset = document.getElementById('reedStopSelect').value;
 
-      // Oscillators setup to simulate double/triple reed Harmonium
       const oscNodes = [];
       const noteGain = audioCtx.createGain();
-      
-      // Calculate air pressure volume modifier
       const pressureVol = Math.max(0.2, airPressure / 100);
+      
       noteGain.gain.setValueAtTime(0, audioCtx.currentTime);
       noteGain.gain.linearRampToValueAtTime(0.4 * pressureVol, audioCtx.currentTime + 0.05);
 
-      // Create Reeds based on stop selection
       if (reedPreset === 'maleFemale' || reedPreset === 'maleOnly' || reedPreset === 'tripleOrgan') {
-        // Male Reed (Sawtooth fundamental)
         const maleOsc = audioCtx.createOscillator();
         maleOsc.type = 'sawtooth';
         maleOsc.frequency.setValueAtTime(freq, audioCtx.currentTime);
@@ -704,7 +751,6 @@ app.get('/', (req, res) => {
       }
 
       if (reedPreset === 'maleFemale' || reedPreset === 'femaleOnly' || reedPreset === 'tripleOrgan') {
-        // Female Reed (Octave higher, square/triangle warm harmonics)
         const femaleOsc = audioCtx.createOscillator();
         femaleOsc.type = 'square';
         femaleOsc.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
@@ -714,7 +760,6 @@ app.get('/', (req, res) => {
       }
 
       if (reedPreset === 'tripleOrgan') {
-        // Sub-Bass Reed
         const bassOsc = audioCtx.createOscillator();
         bassOsc.type = 'triangle';
         bassOsc.frequency.setValueAtTime(freq * 0.5, audioCtx.currentTime);
@@ -723,13 +768,11 @@ app.get('/', (req, res) => {
         oscNodes.push(bassOsc);
       }
 
-      // Filter for warm wood resonance
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(2200, audioCtx.currentTime);
       noteGain.connect(filter);
 
-      // Reverb routing
       const reverbSetting = document.getElementById('reverbSelect').value;
       if (reverbSetting !== 'dry') {
         filter.connect(reverbNode);
@@ -737,20 +780,13 @@ app.get('/', (req, res) => {
         filter.connect(masterGain);
       }
 
-      activeNodes[keyIndex] = {
-        oscs: oscNodes,
-        gain: noteGain,
-        filter: filter
-      };
-
-      // UI Highlight
+      activeNodes[keyIndex] = { oscs: oscNodes, gain: noteGain, filter: filter };
       const keyElem = document.getElementById('key-' + keyIndex);
       if (keyElem) keyElem.classList.add('active');
     }
 
     function stopNote(keyIndex) {
       if (!activeNodes[keyIndex]) return;
-
       const nodeData = activeNodes[keyIndex];
       nodeData.gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
 
@@ -769,6 +805,7 @@ app.get('/', (req, res) => {
       const keyDiv = document.createElement('div');
       keyDiv.id = 'key-' + idx;
       keyDiv.className = 'key ' + (key.isBlack ? 'black-key' : 'white-key');
+      keyDiv.dataset.index = idx;
       
       keyDiv.innerHTML = \`
         <span class="swar-label">\${key.swar}</span>
@@ -776,29 +813,98 @@ app.get('/', (req, res) => {
         <span class="kbd-shortcut">\${key.shortcut.toUpperCase()}</span>
       \`;
 
-      // Mouse & Touch events
+      // Mouse Events
       keyDiv.addEventListener('mousedown', (e) => { e.preventDefault(); playNote(idx); });
       keyDiv.addEventListener('mouseup', () => stopNote(idx));
       keyDiv.addEventListener('mouseleave', () => stopNote(idx));
-      
-      keyDiv.addEventListener('touchstart', (e) => { e.preventDefault(); playNote(idx); });
-      keyDiv.addEventListener('touchend', (e) => { e.preventDefault(); stopNote(idx); });
 
       keyboardElem.appendChild(keyDiv);
     });
 
-    // Drone Switches Setup (12 Root Swars)
+    // Touch Glissando Handler (Slide across keys seamlessly on mobile)
+    const keyboardContainer = document.getElementById('harmoniumKeyboard');
+    
+    function getTouchKeyIndex(touch) {
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target) {
+        const keyElem = target.closest('.key');
+        if (keyElem && keyElem.dataset.index !== undefined) {
+          return parseInt(keyElem.dataset.index, 10);
+        }
+      }
+      return null;
+    }
+
+    keyboardContainer.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      for (let i = 0; i < e.touches.length; i++) {
+        const keyIdx = getTouchKeyIndex(e.touches[i]);
+        if (keyIdx !== null) playNote(keyIdx);
+      }
+    });
+
+    keyboardContainer.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const currentActiveIndices = new Set();
+      for (let i = 0; i < e.touches.length; i++) {
+        const keyIdx = getTouchKeyIndex(e.touches[i]);
+        if (keyIdx !== null) {
+          currentActiveIndices.add(keyIdx);
+          playNote(keyIdx);
+        }
+      }
+      // Stop keys no longer under finger
+      Object.keys(activeNodes).forEach(idx => {
+        if (!currentActiveIndices.has(parseInt(idx, 10))) {
+          stopNote(idx);
+        }
+      });
+    });
+
+    keyboardContainer.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      Object.keys(activeNodes).forEach(idx => stopNote(idx));
+    });
+
+    // Scroll to Octave Helper
+    function scrollToOctave(octaveNum, tabElem) {
+      document.querySelectorAll('.octave-tab').forEach(t => t.classList.remove('active'));
+      if (tabElem) tabElem.classList.add('active');
+
+      const wrapper = document.getElementById('keyboardWrapper');
+      if (octaveNum === 0) {
+        wrapper.scrollLeft = 0;
+      } else {
+        const keyIndex = (octaveNum - 1) * 12;
+        const targetKey = document.getElementById('key-' + keyIndex);
+        if (targetKey) {
+          wrapper.scrollLeft = targetKey.offsetLeft - 20;
+        }
+      }
+    }
+
+    // Toggle Fullscreen & Landscape helper
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(() => {});
+        }
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Drone Switches Setup
     const droneRackElem = document.getElementById('droneRack');
     baseSwars.forEach(swar => {
       const btn = document.createElement('button');
       btn.className = 'drone-btn';
       btn.innerText = swar.western;
-      btn.dataset.note = swar.western;
 
       btn.addEventListener('click', () => {
         initAudio();
         if (activeDrones[swar.western]) {
-          // Turn off drone
           activeDrones[swar.western].gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
           setTimeout(() => {
             activeDrones[swar.western].osc.stop();
@@ -806,13 +912,12 @@ app.get('/', (req, res) => {
           }, 300);
           btn.classList.remove('active');
         } else {
-          // Turn on drone
           const freq = 130.81 * Math.pow(2, baseSwars.indexOf(swar) / 12);
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
 
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(freq * 0.5, audioCtx.currentTime); // Bass drone
+          osc.frequency.setValueAtTime(freq * 0.5, audioCtx.currentTime);
           gain.gain.setValueAtTime(0, audioCtx.currentTime);
           gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.5);
 
@@ -824,7 +929,6 @@ app.get('/', (req, res) => {
           btn.classList.add('active');
         }
       });
-
       droneRackElem.appendChild(btn);
     });
 
@@ -858,16 +962,12 @@ app.get('/', (req, res) => {
         return;
       }
       const key = e.key.toLowerCase();
-      if (shortcutMap[key] !== undefined) {
-        playNote(shortcutMap[key]);
-      }
+      if (shortcutMap[key] !== undefined) playNote(shortcutMap[key]);
     });
 
     window.addEventListener('keyup', (e) => {
       const key = e.key.toLowerCase();
-      if (shortcutMap[key] !== undefined) {
-        stopNote(shortcutMap[key]);
-      }
+      if (shortcutMap[key] !== undefined) stopNote(shortcutMap[key]);
     });
 
     // Raag Highlighter Logic
@@ -891,9 +991,7 @@ app.get('/', (req, res) => {
     document.getElementById('volumeSlider').addEventListener('input', (e) => {
       const val = e.target.value;
       document.getElementById('volumeVal').innerText = val + '%';
-      if (masterGain) {
-        masterGain.gain.setValueAtTime(val / 100, audioCtx.currentTime);
-      }
+      if (masterGain) masterGain.gain.setValueAtTime(val / 100, audioCtx.currentTime);
     });
 
     // Recording Controls
@@ -903,7 +1001,6 @@ app.get('/', (req, res) => {
     recordBtn.addEventListener('click', () => {
       initAudio();
       if (!isRecording) {
-        // Start recording
         const dest = audioCtx.createMediaStreamDestination();
         masterGain.connect(dest);
         mediaRecorder = new MediaRecorder(dest.stream);
@@ -920,7 +1017,6 @@ app.get('/', (req, res) => {
         recordBtn.innerText = '⏹ Stop Rec';
         recordBtn.classList.add('btn-danger');
       } else {
-        // Stop recording
         mediaRecorder.stop();
         isRecording = false;
         recordBtn.innerText = '🔴 Record';
@@ -962,7 +1058,7 @@ app.get('/', (req, res) => {
           osc.start();
           osc.stop(audioCtx.currentTime + 0.1);
           beat = (beat + 1) % 16;
-        }, 375); // 160 BPM Teental cadence
+        }, 375);
       }
     });
   </script>
